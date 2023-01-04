@@ -1,0 +1,27 @@
+podTemplate(//label: 'kaniko', cloud: 'kubernetes', serviceAccount: 'jenkins',
+  containers: [
+    containerTemplate(name: 'kaniko', image: 'gcr.io/kaniko-project/executor:debug', command: 'sleep', args: '9000'),
+    
+  ],
+/*  volumes: [
+    secretVolume(mountPath: '/etc/.ssh', secretName: 'ssh-home'),
+    secretVolume(secretName: 'docker-hub-credentials', mountPath: '/etc/.secret'),
+    hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock')
+  ] */
+  ) {
+    node(POD_LABEL) {
+        stage('Prepare') {
+            checkout scm
+        }
+
+        stage('Build Docker Image') {
+            container('kaniko') {
+                sh """
+                  echo boo
+                """
+                milestone(1)
+            }
+        }
+
+    }
+}
